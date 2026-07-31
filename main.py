@@ -186,7 +186,7 @@ elif st.session_state.app_step == 3:
         if st.button("⏱️ 1 MINUTE", use_container_width=True):
             st.session_state.duration = "1 min"
             st.session_state.app_step = 4
-            st.session_state.signal_generated = False # تصفير الإشارة عند دخول وقت جديد
+            st.session_state.signal_generated = False
             st.rerun()
         if st.button("⏱️ 3 MINUTES", use_container_width=True):
             st.session_state.duration = "3 min"
@@ -222,7 +222,6 @@ elif st.session_state.app_step == 4:
     if 'signal_generated' not in st.session_state:
         st.session_state.signal_generated = False
 
-    # زر التوليد الرئيسي يظهر إذا لم يتم الضغط عليه، أو يظهر خيار التحديث بعد ضغطه
     if not st.session_state.signal_generated:
         if st.button("⚡ تـولـيـد الإشـارة الآن ⚡", use_container_width=True):
             with st.spinner("⏳ جاري سحب الأسعار وتحليل خطوط RSI و EMA الحية..."):
@@ -230,7 +229,6 @@ elif st.session_state.app_step == 4:
                 st.session_state.signal_generated = True
                 st.rerun()
     else:
-        # حسابات أسعار حقيقية ومؤشرات صحيحة لعدم العشوائية
         entry_price = round(np.random.uniform(1.0845, 1.0920), 5)
         rsi_calc = np.random.uniform(15, 85)
         
@@ -254,8 +252,13 @@ elif st.session_state.app_step == 4:
         </div>
         """, unsafe_allow_html=True)
         
-        # صناديق عرض تفاصيل الصفقة الفاخرة والواضحة أسفل شاشة الهاتف
         c1, c2, c3 = st.columns(3)
         with c1:
             st.markdown(f"<div class='data-card'><span style='color:#888;'>سعر الدخول</span><br><b style='color:#fff;'>{entry_price}</b></div>", unsafe_allow_html=True)
         with c2:
+            st.markdown(f"<div class='data-card'><span style='color:#888;'>مدة الصفقة</span><br><b style='color:#fff;'>{st.session_state.duration}</b></div>", unsafe_allow_html=True)
+        with c3:
+            st.markdown(f"<div class='data-card'><span style='color:#888;'>وقت الإغلاق</span><br><b style='color:#fff;'>{expiration_time}</b></div>", unsafe_allow_html=True)
+            
+        st.write("")
+        
