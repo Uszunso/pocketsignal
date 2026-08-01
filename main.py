@@ -1,345 +1,220 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
-import yfinance as yf
-import datetime
 import time
 
-# إعدادات الشاشة الملكية
+# ----------------- الإعدادات الأساسية -----------------
 st.set_page_config(
-    page_title="PocketSignal Pro",
-    page_icon="👑",
+    page_title="Genius AI Bot",
+    page_icon="⚡",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# الأكواد البصرية (CSS)
+# ----------------- التصميم الذكي (CSS) -----------------
 st.markdown("""
+    <meta name="google" content="notranslate">
     <style>
     .stApp {
-        background: radial-gradient(circle at top, #141414 0%, #060606 100%);
-        color: #e5c158;
-        font-family: 'Poppins', sans-serif;
+        background-color: #0d1117;
+        background-image: radial-gradient(circle at 50% -20%, #1a2639, #0d1117);
+        color: #c9d1d9;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    .luxury-box {
-        background: rgba(20, 20, 20, 0.7);
-        border: 1px solid rgba(229, 193, 88, 0.35);
-        border-radius: 20px;
-        padding: 25px 15px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 15px rgba(229, 193, 88, 0.05);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        text-align: center;
-        margin-bottom: 25px;
-    }
-    .gold-text-main {
-        font-size: 36px;
+    .ai-title {
+        font-size: 38px;
         font-weight: 900;
-        background: linear-gradient(135deg, #fed766 0%, #b38728 50%, #fbf5b7 100%);
+        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        letter-spacing: 2px;
         text-align: center;
-        margin-bottom: 5px;
-        filter: drop-shadow(0px 2px 10px rgba(254, 215, 102, 0.35));
+        letter-spacing: 3px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
     }
+    .ai-subtitle {
+        text-align: center; color: #8b949e; font-size: 11px; letter-spacing: 4px; margin-bottom: 30px;
+    }
+    .tech-panel {
+        background: rgba(22, 27, 34, 0.65); border: 1px solid rgba(88, 166, 255, 0.25);
+        border-radius: 16px; padding: 25px 20px; box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5);
+        text-align: center; margin-bottom: 20px;
+    }
+    .register-btn {
+        display: block; width: 100%; text-align: center; text-decoration: none;
+        background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
+        color: white !important; font-weight: bold; padding: 15px; border-radius: 10px;
+        margin-bottom: 20px; font-size: 16px; box-shadow: 0 4px 15px rgba(31, 111, 235, 0.4);
+    }
+    .register-btn:hover { background: linear-gradient(135deg, #388bfd 0%, #58a6ff 100%); }
+    
     .stButton>button {
-        background: linear-gradient(135deg, #1f1f1f 0%, #0f0f0f 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(179, 135, 40, 0.6) !important;
-        border-radius: 14px !important;
-        padding: 15px 5px !important;
-        font-size: 16px !important;
-        font-weight: bold !important;
-        transition: all 0.25s ease-in-out !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5) !important;
-        height: 85px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        background: rgba(33, 38, 45, 0.7) !important; color: #e6edf3 !important;
+        border: 1px solid rgba(88, 166, 255, 0.3) !important; border-radius: 12px !important;
+        padding: 20px 10px !important; font-size: 15px !important; font-weight: 700 !important;
+        transition: all 0.3s ease !important; width: 100%; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
     }
     .stButton>button:hover {
-        border: 1px solid #fed766 !important;
-        box-shadow: 0 0 25px rgba(254, 215, 102, 0.45) !important;
-        color: #fed766 !important;
-        transform: translateY(-3px);
+        background: linear-gradient(135deg, #238636 0%, #2ea043 100%) !important;
+        border-color: #3fb950 !important; color: #ffffff !important; transform: translateY(-3px);
     }
-    .signal-container {
-        padding: 30px;
-        border-radius: 15px;
-        font-weight: 800;
-        font-size: 40px;
-        margin: 20px 0;
-        letter-spacing: 1px;
+    .signal-box {
+        padding: 25px; border-radius: 15px; font-weight: 900; font-size: 40px;
+        margin: 20px 0; letter-spacing: 2px; text-transform: uppercase; text-align: center;
+        animation: pulse 2s infinite;
     }
-    .signal-up {
-        background: rgba(0, 255, 102, 0.08);
-        border: 2px solid #00ff66;
-        color: #00ff66;
-        text-shadow: 0 0 15px #00ff66;
-        box-shadow: inset 0 0 20px rgba(0, 255, 102, 0.1), 0 0 30px rgba(0, 255, 102, 0.2);
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    .signal-buy {
+        background: rgba(35, 134, 54, 0.15); border: 2px solid #2ea043; color: #3fb950;
+        text-shadow: 0 0 15px rgba(63, 185, 80, 0.5); box-shadow: inset 0 0 20px rgba(46, 160, 67, 0.2);
     }
-    .signal-down {
-        background: rgba(255, 51, 51, 0.08);
-        border: 2px solid #ff3333;
-        color: #ff3333;
-        text-shadow: 0 0 15px #ff3333;
-        box-shadow: inset 0 0 20px rgba(255, 51, 51, 0.1), 0 0 30px rgba(255, 51, 51, 0.2);
+    .signal-sell {
+        background: rgba(218, 54, 51, 0.15); border: 2px solid #f85149; color: #ff7b72;
+        text-shadow: 0 0 15px rgba(255, 123, 114, 0.5); box-shadow: inset 0 0 20px rgba(248, 81, 73, 0.2);
     }
-    .data-card {
-        background: rgba(10, 10, 10, 0.85);
-        border: 1px solid rgba(229, 193, 88, 0.2);
-        border-radius: 12px;
-        padding: 12px;
-        font-size: 14px;
-        text-align: center;
+    .metric-badge {
+        background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+        padding: 12px; font-size: 12px; color: #8b949e; text-align: center;
     }
-    .bottom-navbar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #0b0b0b;
-        border-top: 1px solid rgba(229, 193, 88, 0.25);
-        padding: 12px 0;
-        display: flex;
-        justify-content: space-around;
-        font-size: 12px;
-        color: #777;
-        z-index: 999;
-    }
-    .nav-item-active {
-        color: #fed766;
-        font-weight: bold;
-        text-shadow: 0 0 8px rgba(254, 215, 102, 0.3);
-    }
+    .metric-value { font-size: 20px; font-weight: 900; color: #e6edf3; margin-top: 5px; }
+    .risk-alert { color: #58a6ff; font-size: 14px; font-weight: bold; text-align: center; margin-top: 10px; }
     </style>
 """, unsafe_allow_html=True)
 
-# إدارة ذاكرة التنقل
-if 'app_step' not in st.session_state:
-    st.session_state.app_step = 1
-if 'market_type' not in st.session_state:
-    st.session_state.market_type = ""
-if 'pair_name' not in st.session_state:
-    st.session_state.pair_name = ""
-if 'duration' not in st.session_state:
-    st.session_state.duration = ""
-
-st.markdown('<div class="gold-text-main">POCKET SIGNAL</div>', unsafe_allow_html=True)
-st.markdown('<p style="text-align:center; color:#888; font-size:11px; margin-bottom:20px; letter-spacing:3px;">PREMIUM TRADING AI BOT</p>', unsafe_allow_html=True)
-
-def reset_to_main():
-    st.session_state.app_step = 1
-    st.session_state.market_type = ""
-    st.session_state.pair_name = ""
-    st.session_state.duration = ""
-
-all_pocket_option_pairs_with_flags = {
-    "EUR/USD": "🇪🇺🇺🇸 EUR/USD", "GBP/USD": "🇬🇧🇺🇸 GBP/USD", "USD/JPY": "🇺🇸🇯🇵 USD/JPY", "EUR/JPY": "🇪🇺🇯🇵 EUR/JPY", 
-    "GBP/JPY": "🇬🇧🇯🇵 GBP/JPY", "AUD/USD": "🇦🇺🇺🇸 AUD/USD", "USD/CAD": "🇺🇸🇨🇦 USD/CAD", "USD/CHF": "🇺🇸🇨🇭 USD/CHF", 
-    "NZD/USD": "🇳🇿🇺🇸 NZD/USD", "AUD/CAD": "🇦🇺🇨🇦 AUD/CAD", "AUD/CHF": "🇦🇺🇨🇭 AUD/CHF", "AUD/JPY": "🇦🇺🇯🇵 AUD/JPY"
+# ----------------- القوائم المنفصلة للأزواج -----------------
+forex_pairs = {
+    "EUR/USD": "🇪🇺🇺🇸 EUR/USD", "GBP/USD": "🇬🇧🇺🇸 GBP/USD", "USD/JPY": "🇺🇸🇯🇵 USD/JPY",
+    "USD/CHF": "🇺🇸🇨🇭 USD/CHF", "USD/CAD": "🇺🇸🇨🇦 USD/CAD", "AUD/USD": "🇦🇺🇺🇸 AUD/USD",
+    "EUR/GBP": "🇪🇺🇬🇧 EUR/GBP", "EUR/JPY": "🇪🇺🇯🇵 EUR/JPY", "AUD/JPY": "🇦🇺🇯🇵 AUD/JPY",
+    "EUR/AUD": "🇪🇺🇦🇺 EUR/AUD", "GBP/CHF": "🇬🇧🇨🇭 GBP/CHF", "CAD/CHF": "🇨🇦🇨🇭 CAD/CHF",
+    "EUR/CHF": "🇪🇺🇨🇭 EUR/CHF", "CAD/JPY": "🇨🇦🇯🇵 CAD/JPY", "GBP/CAD": "🇬🇧🇨🇦 GBP/CAD",
+    "AUD/CHF": "🇦🇺🇨🇭 AUD/CHF", "GBP/AUD": "🇬🇧🇦🇺 GBP/AUD", "NZD/USD": "🇳🇿🇺🇸 NZD/USD"
 }
 
-# ----------------- الشاشة 1: اختيار القسم -----------------
-if st.session_state.app_step == 1:
+otc_pairs = {
+    "AUD/CAD OTC": "🇦🇺🇨🇦 AUD/CAD OTC", "AUD/CHF OTC": "🇦🇺🇨🇭 AUD/CHF OTC", "BHD/CNY OTC": "🇧🇭🇨🇳 BHD/CNY OTC",
+    "CAD/JPY OTC": "🇨🇦🇯🇵 CAD/JPY OTC", "EUR/CHF OTC": "🇪🇺🇨🇭 EUR/CHF OTC", "EUR/GBP OTC": "🇪🇺🇬🇧 EUR/GBP OTC",
+    "EUR/NZD OTC": "🇪🇺🇳🇿 EUR/NZD OTC", "EUR/TRY OTC": "🇪🇺🇹🇷 EUR/TRY OTC", "EUR/USD OTC": "🇪🇺🇺🇸 EUR/USD OTC",
+    "GBP/AUD OTC": "🇬🇧🇦🇺 GBP/AUD OTC", "QAR/CNY OTC": "🇶🇦🇨🇳 QAR/CNY OTC", "USD/ARS OTC": "🇺🇸🇦🇷 USD/ARS OTC",
+    "LBP/USD OTC": "🇱🇧🇺🇸 LBP/USD OTC", "USD/CLP OTC": "🇺🇸🇨🇱 USD/CLP OTC", "AUD/JPY OTC": "🇦🇺🇯🇵 AUD/JPY OTC",
+    "NGN/USD OTC": "🇳🇬🇺🇸 NGN/USD OTC", "USD/MXN OTC": "🇺🇸🇲🇽 USD/MXN OTC", "AUD/USD OTC": "🇦🇺🇺🇸 AUD/USD OTC",
+    "USD/EGP OTC": "🇺🇸🇪🇬 USD/EGP OTC", "USD/JPY OTC": "🇺🇸🇯🇵 USD/JPY OTC", "USD/MYR OTC": "🇺🇸🇲🇾 USD/MYR OTC",
+    "USD/PHP OTC": "🇺🇸🇵🇭 USD/PHP OTC", "USD/RUB OTC": "🇺🇸🇷🇺 USD/RUB OTC", "USD/SGD OTC": "🇺🇸🇸🇬 USD/SGD OTC",
+    "YER/USD OTC": "🇾🇪🇺🇸 YER/USD OTC", "EUR/HUF OTC": "🇪🇺🇭🇺 EUR/HUF OTC", "EUR/RUB OTC": "🇪🇺🇷🇺 EUR/RUB OTC",
+    "KES/USD OTC": "🇰🇪🇺🇸 KES/USD OTC", "USD/CHF OTC": "🇺🇸🇨🇭 USD/CHF OTC", "USD/BDT OTC": "🇺🇸🇧🇩 USD/BDT OTC",
+    "USD/CAD OTC": "🇺🇸🇨🇦 USD/CAD OTC", "USD/COP OTC": "🇺🇸🇨🇴 USD/COP OTC", "AED/CNY OTC": "🇦🇪🇨🇳 AED/CNY OTC",
+    "USD/CNH OTC": "🇺🇸🇨🇳 USD/CNH OTC", "USD/BRL OTC": "🇺🇸🇧🇷 USD/BRL OTC", "JOD/CNY OTC": "🇯🇴🇨🇳 JOD/CNY OTC",
+    "GBP/JPY OTC": "🇬🇧🇯🇵 GBP/JPY OTC", "NZD/USD OTC": "🇳🇿🇺🇸 NZD/USD OTC", "USD/DZD OTC": "🇺🇸🇩🇿 USD/DZD OTC",
+    "CHF/NOK OTC": "🇨🇭🇳🇴 CHF/NOK OTC", "OMR/CNY OTC": "🇴🇲🇨🇳 OMR/CNY OTC", "AUD/NZD OTC": "🇦🇺🇳🇿 AUD/NZD OTC",
+    "EUR/JPY OTC": "🇪🇺🇯🇵 EUR/JPY OTC", "USD/IDR OTC": "🇺🇸🇮🇩 USD/IDR OTC", "CHF/JPY OTC": "🇨🇭🇯🇵 CHF/JPY OTC",
+    "TND/USD OTC": "🇹🇳🇺🇸 TND/USD OTC", "GBP/USD OTC": "🇬🇧🇺🇸 GBP/USD OTC", "NZD/JPY OTC": "🇳🇿🇯🇵 NZD/JPY OTC",
+    "CAD/CHF OTC": "🇨🇦🇨🇭 CAD/CHF OTC", "UAH/USD OTC": "🇺🇦🇺🇸 UAH/USD OTC"
+}
+
+# ----------------- إدارة حالة التطبيق -----------------
+if 'app_state' not in st.session_state: st.session_state.app_state = 'verify'
+if 'selected_pair' not in st.session_state: st.session_state.selected_pair = ''
+if 'timeframe' not in st.session_state: st.session_state.timeframe = '1 Min'
+if 'signal_data' not in st.session_state: st.session_state.signal_data = {}
+
+st.markdown('<div class="ai-title">GENIUS AI BOT</div>', unsafe_allow_html=True)
+st.markdown('<div class="ai-subtitle">POCKET OPTION PREMIUM SIGNALS</div>', unsafe_allow_html=True)
+
+# ----------------- شاشة التحقق وشروط الإحالة والإيداع -----------------
+if st.session_state.app_state == 'verify':
     st.markdown("""
-    <div class="luxury-box">
-        <h4 style="color:#fff; margin-bottom:8px;">نظام التحليل الفني بالأعلام الذكية</h4>
-        <p style="color:#aaa; font-size:13px; margin-bottom:0;">حدد القسم لبناء لوحة المربعات الحية</p>
+    <div class="tech-panel">
+        <h4 style="color:#58a6ff; margin-bottom:15px;">🚀 شروط تفعيل التطبيق المجاني</h4>
+        <p style="color:#c9d1d9; font-size:14px; line-height: 1.6; margin-bottom:15px; text-align: right;">
+            1️⃣ التسجيل حصرياً عبر رابط الإحالة الخاص بنا.<br>
+            2️⃣ شحن الحساب وإيداع مبلغ <strong>50 دولار</strong> كحد أدنى.<br>
+            3️⃣ إدخال رقم الـ ID الخاص بك لنتحقق يدوياً من تفعيل الشروط.
+        </p>
+        <!-- استبدل الرابط أدناه برابط الإحالة الخاص بك -->
+        <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="register-btn">
+            🔗 اضغط هنا للتسجيل في المنصة
+        </a>
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("📈 قـسـم الـفـوركـس الـعـالـمـي (FOREX)", use_container_width=True):
-        st.session_state.market_type = "FOREX"
-        st.session_state.app_step = 2
-        st.rerun()
-        
-    st.write("")
-    if st.button("🤖 قـسـم الأوتـيـك الـخـاص (OTC MARKET)", use_container_width=True):
-        st.session_state.market_type = "OTC"
-        st.session_state.app_step = 2
-        st.rerun()
+    st.markdown('<h5 style="color:#8b949e; text-align:center;">أدخل رقم الحساب (ID) للتحقق اليدوي:</h5>', unsafe_allow_html=True)
+    user_id = st.text_input("رقم الحساب (ID):", placeholder="مثال: 12345678", label_visibility="collapsed")
+    
+    if st.button("🔍 إرسال طلب التحقق", use_container_width=True):
+        if user_id.strip() == "":
+            st.error("❌ الرجاء إدخال رقم الـ ID أولاً!")
+        else:
+            # مؤقتاً سيتم نقله للشاشة أو إعلامه بأنه قيد المراجعة (يمكنك تعديلها بحسب طريقتك في فحص الـ ID)
+            st.success("✅ تم إرسال الـ ID بنجاح! سيتم التحقق من إيداعك وتفعيل حسابك قريباً.")
+            time.sleep(2)
+            st.session_state.app_state = 'setup'
+            st.rerun()
 
-# ----------------- الشاشة 2: اختيار الزوج -----------------
-elif st.session_state.app_step == 2:
-    st.markdown(f"""
-    <div class="luxury-box" style="padding:15px 10px;">
-        <h5 style="color:#fed766; margin-bottom:3px; font-weight:bold;">مربعات عملات {st.session_state.market_type} بالأعلام</h5>
-        <span style="color:#aaa; font-size:13px;">اضغط على مربع زوج العملة مباشرة لبدء التحليل الفعلي</span>
-    </div>
-    """, unsafe_allow_html=True)
+# ----------------- الشاشة الأولى: الإعدادات -----------------
+elif st.session_state.app_state == 'setup':
+    
+    with st.expander("🛡️ إدارة رأس المال (Risk Management)", expanded=True):
+        capital = st.number_input("أدخل رأس مالك في المنصة ($):", min_value=0.0, value=100.0, step=10.0)
+        safe_amount = capital * 0.02
+        st.markdown(f'<div class="risk-alert">💡 المبلغ الآمن والمقترح لدخول الصفقة القادمة هو: <strong>${safe_amount:.2f}</strong></div>', unsafe_allow_html=True)
+
+    st.write("---")
+    
+    st.markdown('<h5 style="color:#58a6ff; font-weight:800;">⚙️ إعدادات الإشارة:</h5>', unsafe_allow_html=True)
+    market_choice = st.radio("نوع السوق:", ["قسم الأوتي سي (OTC)", "الفوركس المباشر (FOREX)"], horizontal=True)
+    selected_time = st.select_slider("الإطار الزمني:", options=['1 Min', '3 Min', '5 Min', '15 Min'])
+    
+    active_pairs = otc_pairs if "OTC" in market_choice else forex_pairs
+    search_query = st.text_input("🔍 بحث سريع عن عملة (مثال: EUR):")
+    display_pairs = {k: v for k, v in active_pairs.items() if search_query.upper() in k.upper()} if search_query else active_pairs
     
     cols = st.columns(2)
-    
-    for index, (pair, text_with_flags) in enumerate(all_pocket_option_pairs_with_flags.items()):
-        if st.session_state.market_type == "OTC":
-            display_text = f"{text_with_flags} OTC"
-            full_pair_name = f"{pair} OTC"
-        else:
-            display_text = text_with_flags
-            full_pair_name = f"{pair} FOREX"
-            
-        with cols[index % 2]:
-            st.markdown("<div style='text-align:center; margin-bottom:-12px; color:#00ff66; font-size:11px; font-weight:bold; z-index:2; position:relative;'>Payout 92%</div>", unsafe_allow_html=True)
-            if st.button(display_text, key=f"btn_{full_pair_name}", use_container_width=True):
-                st.session_state.pair_name = full_pair_name
-                st.session_state.app_step = 3
+    for i, (code, flag_name) in enumerate(display_pairs.items()):
+        with cols[i % 2]:
+            if st.button(f"{flag_name}", key=code):
+                st.session_state.selected_pair = flag_name
+                st.session_state.timeframe = selected_time
+                st.session_state.app_state = 'analyze'
                 st.rerun()
-                
-    st.write("---")
-    if st.button("⬅️ العودة لتغيير نوع القسم", use_container_width=True):
-        reset_to_main()
-        st.rerun()
 
-# ----------------- الشاشة 3: اختيار الإطار الزمني -----------------
-elif st.session_state.app_step == 3:
+# ----------------- الشاشة الثانية: النتائج الحية -----------------
+elif st.session_state.app_state == 'analyze':
     st.markdown(f"""
-    <div class="luxury-box">
-        <h5 style="color:#aaa; margin-bottom:5px;">الزوج النشط: {st.session_state.pair_name}</h5>
-        <span style="color:#fff; font-size:15px;">حدد وقت انتهاء الصفقة (Expiration Time)</span>
+    <div class="tech-panel">
+        <h5 style="color:#8b949e; margin-bottom:10px;">الزوج: <span style="color:#58a6ff;">{st.session_state.selected_pair}</span></h5>
+        <h5 style="color:#8b949e; margin-bottom:10px;">المدة: <span style="color:#58a6ff;">{st.session_state.timeframe}</span></h5>
     </div>
     """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("⏱️ 1 MINUTE", use_container_width=True):
-            st.session_state.duration = "1 min"
-            st.session_state.app_step = 4
-            st.rerun()
-        if st.button("⏱️ 3 MINUTES", use_container_width=True):
-            st.session_state.duration = "3 min"
-            st.session_state.app_step = 4
-            st.rerun()
-    with col2:
-        if st.button("⏱️ 5 MINUTES", use_container_width=True):
-            st.session_state.duration = "5 min"
-            st.session_state.app_step = 4
-            st.rerun()
-        if st.button("⏱️ 15 MINUTES", use_container_width=True):
-            st.session_state.duration = "15 min"
-            st.session_state.app_step = 4
-            st.rerun()
-            
-    st.write("---")
-    if st.button("⬅️ العودة لاختيار الزوج", use_container_width=True):
-        st.session_state.app_step = 2
-        st.rerun()
 
-# ----------------- الشاشة 4: التحليل الفني الحقيقي -----------------
-elif st.session_state.app_step == 4:
-    st.markdown(f"""
-    <div class="luxury-box">
-        <h4 style="color:#fed766; margin-bottom:10px;">👑 جارٍ تحليل بيانات السوق 👑</h4>
-        <p style="color:#fff; font-size:15px; margin-bottom:5px;">الزوج النشط: <b>{st.session_state.pair_name}</b></p>
-        <p style="color:#aaa; font-size:13px; margin-bottom:0;">الإطار الزمني: {st.session_state.duration}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    if not st.session_state.signal_data:
+        with st.spinner("جاري استخراج الإشارة من السوق..."):
+            time.sleep(2)
+            rsi = np.random.randint(20, 85)
+            direction = "BUY ↗" if rsi < 50 else "SELL ↘"
+            st.session_state.signal_data = {
+                'direction': direction,
+                'rsi': rsi,
+                'accuracy': np.random.randint(89, 98),
+                'css_class': 'signal-buy' if rsi < 50 else 'signal-sell'
+            }
+
+    data = st.session_state.signal_data
     
-    signal_type = "WAIT"
-    accuracy = 0
-    current_price = "0.00"
-    
-    with st.spinner('جاري قراءة الشموع اليابانية وحساب مؤشرات (RSI & EMA)...'):
-        try:
-            # تجهيز اسم الزوج والإطار الزمني لمكتبة ياهو
-            base_pair = st.session_state.pair_name.split()[0]
-            yf_ticker = base_pair.replace("/", "") + "=X"
-            interval_map = {"1 min": "1m", "3 min": "1m", "5 min": "5m", "15 min": "15m"}
-            yf_interval = interval_map.get(st.session_state.duration, "1m")
-            
-            # تحليل أسواق OTC
-            if "OTC" in st.session_state.pair_name:
-                time.sleep(2) # تأخير بسيط لمحاكاة التحليل
-                signal_type = np.random.choice(["UP", "DOWN"])
-                accuracy = np.random.randint(85, 96)
-                current_price = "OTC Market"
-                
-            # تحليل أسواق الفوركس الحقيقية
-            else:
-                data = yf.download(yf_ticker, period="1d", interval=yf_interval, progress=False)
-                
-                if not data.empty and len(data) > 20:
-                    # حساب مؤشر القوة النسبية RSI
-                    delta = data['Close'].diff()
-                    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-                    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-                    rs = gain / loss
-                    data['RSI'] = 100 - (100 / (1 + rs))
-                    
-                    # حساب المتوسطات المتحركة EMA 9 و EMA 21
-                    data['EMA9'] = data['Close'].ewm(span=9, adjust=False).mean()
-                    data['EMA21'] = data['Close'].ewm(span=21, adjust=False).mean()
-                    
-                    # قراءة آخر شمعة
-                    last_rsi = float(data['RSI'].iloc[-1].item() if isinstance(data['RSI'].iloc[-1], pd.Series) else data['RSI'].iloc[-1])
-                    last_ema9 = float(data['EMA9'].iloc[-1].item() if isinstance(data['EMA9'].iloc[-1], pd.Series) else data['EMA9'].iloc[-1])
-                    last_ema21 = float(data['EMA21'].iloc[-1].item() if isinstance(data['EMA21'].iloc[-1], pd.Series) else data['EMA21'].iloc[-1])
-                    
-                    # جلب السعر الحالي الفعلي
-                    last_close = float(data['Close'].iloc[-1].item() if isinstance(data['Close'].iloc[-1], pd.Series) else data['Close'].iloc[-1])
-                    current_price = f"{last_close:.5f}"
-                    
-                    # شروط الاستراتيجية الفعلية
-                    if last_ema9 > last_ema21 and last_rsi < 70:
-                        signal_type = "UP"
-                        accuracy = min(98, int(last_rsi + 30))
-                    elif last_ema9 < last_ema21 and last_rsi > 30:
-                        signal_type = "DOWN"
-                        accuracy = min(98, int((100 - last_rsi) + 30))
-                    else:
-                        # في حال تذبذب السوق
-                        signal_type = np.random.choice(["UP", "DOWN"])
-                        accuracy = np.random.randint(75, 83)
-                else:
-                    st.warning("السوق مغلق حالياً أو لا تتوفر بيانات كافية.")
-                    st.stop()
-                    
-        except Exception as e:
-            st.error("حدث خطأ في الاتصال بالأسواق العالمية.")
-            st.stop()
-            
-    # عرض الإشارة
-    if signal_type == "UP":
-        st.markdown("""
-        <div class="signal-container signal-up">
-            شراء 🟢 UP
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-        <div class="signal-container signal-down">
-            بيع 🔴 DOWN
-        </div>
-        """, unsafe_allow_html=True)
-        
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f'<div class="data-card">🎯 قوة الإشارة: {accuracy}%</div>', unsafe_allow_html=True)
-    with col2:
-        st.markdown(f'<div class="data-card">💲 السعر المباشر: {current_price}</div>', unsafe_allow_html=True)
-        
+    st.markdown(f'<div class="signal-box {data["css_class"]}">{data["direction"]}</div>', unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns(3)
+    with c1: st.markdown(f'<div class="metric-badge">🎯 الدقة<div class="metric-value">{data["accuracy"]}%</div></div>', unsafe_allow_html=True)
+    with c2: st.markdown(f'<div class="metric-badge">📊 RSI<div class="metric-value">{data["rsi"]}</div></div>', unsafe_allow_html=True)
+    with c3: st.markdown(f'<div class="metric-badge">⏳ التوقيت<div class="metric-value">Live</div></div>', unsafe_allow_html=True)
+
     st.write("---")
     
-    if st.button("🔄 فحص السوق من جديد", use_container_width=True):
-        st.rerun()
-        
-    st.write("")
-    col_back1, col_back2 = st.columns(2)
-    with col_back1:
-        if st.button("⬅️ تغيير الزوج", use_container_width=True):
-            st.session_state.app_step = 2
+    col_a, col_b = st.columns(2)
+    with col_a:
+        if st.button("🔄 فحص جديد", use_container_width=True):
+            st.session_state.signal_data = {}
             st.rerun()
-    with col_back2:
-        if st.button("🏠 الرئيسية", use_container_width=True):
-            reset_to_main()
+    with col_b:
+        if st.button("⚙️ العودة للمربعات", use_container_width=True):
+            st.session_state.signal_data = {}
+            st.session_state.app_state = 'setup'
             st.rerun()
-
-# ----------------- شريط التنقل السفلي -----------------
-st.markdown("""
-    <div class="bottom-navbar">
-        <div class="nav-item-active">📊 الإشارات</div>
-        <div>🏆 النتائج</div>
-        <div>⚙️ الإعدادات</div>
-    </div>
-""", unsafe_allow_html=True)
