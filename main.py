@@ -3,11 +3,11 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
 # ضع توكن البوت الخاص بك هنا
-TOKEN = "YOUR_BOT_TOKEN_HERE"
+TOKEN = 8950689089:AAEOF3ztIf30cXf8FNv7huXtgocpfxNoVEY
 bot = telebot.TeleBot(TOKEN)
 
 # ضع معرف تلغرام الخاص بك هنا (Admin ID)
-ADMIN_ID = 123456789  # استبدل الرقم بمعرفك الحقيقي
+ADMIN_ID = 7254799052  # استبدل الرقم بمعرفك الحقيقي
 
 # قواعد البيانات المؤقتة
 users_data = {}          # تخزين بيانات المستخدمين (رابط الإحالة، الأيدي، حالة الحساب)
