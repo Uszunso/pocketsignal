@@ -36,7 +36,7 @@ async def login_page(msg: str = ""):
         </div>
         """
 
-    html_content = f"""
+    html_content = """
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
@@ -45,19 +45,19 @@ async def login_page(msg: str = ""):
         <title>PocketSignal Gateway</title>
         <link rel="stylesheet" href="https://cloudflare.com">
         <style>
-            :root {{ --bg-dark: #04060b; --panel-color: #0d111b; --neon-gold: #ffd700; --text-main: #ffffff; --text-muted: #51637c; }}
-            body {{ font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; box-sizing: border-box; }}
-            .auth-container {{ width: 100%; max-width: 400px; background: var(--panel-color); border-radius: 28px; padding: 30px; border: 1px solid rgba(255, 215, 0, 0.2); box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; }}
-            .brand-logo {{ font-size: 28px; font-weight: 900; background: linear-gradient(90deg, var(--neon-gold), #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .input-group {{ text-align: right; margin-bottom: 18px; position: relative; }}
-            .input-group label {{ display: block; font-size: 13px; color: var(--neon-gold); margin-bottom: 6px; font-weight: bold; }}
-            .input-group input {{ width: 100%; background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.06); padding: 12px 40px 12px 12px; border-radius: 12px; color: white; box-sizing: border-box; font-size: 15px; }}
-            .input-group i {{ position: absolute; right: 14px; top: 38px; color: var(--text-muted); }}
-            .btn-auth {{ width: 100%; background: linear-gradient(135deg, var(--neon-gold), #ffaa00); color: #04060b; border: none; padding: 15px; border-radius: 35px; font-size: 17px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 20px rgba(255,215,0,0.25); }}
-            .info-notice {{ font-size: 12px; color: var(--text-muted); line-height: 1.6; text-align: right; margin: 20px 0; background: rgba(255,215,0,0.02); padding: 12px; border-radius: 10px; border-right: 3px solid var(--neon-gold); }}
-            .checking-screen {{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #04060b; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; font-family: monospace; }}
-            .spinner {{ border: 3px solid rgba(255,215,0,0.1); border-top: 3px solid var(--neon-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }}
-            @keyframes spin {{ 0% {{ transform: rotate(0deg); }} 100% {{ transform: rotate(360deg); }} }}
+            :root { --bg-dark: #04060b; --panel-color: #0d111b; --neon-gold: #ffd700; --text-main: #ffffff; --text-muted: #51637c; }
+            body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; box-sizing: border-box; }
+            .auth-container { width: 100%; max-width: 400px; background: var(--panel-color); border-radius: 28px; padding: 30px; border: 1px solid rgba(255, 215, 0, 0.2); box-shadow: 0 15px 40px rgba(0,0,0,0.6); text-align: center; }
+            .brand-logo { font-size: 28px; font-weight: 900; background: linear-gradient(90deg, var(--neon-gold), #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .input-group { text-align: right; margin-bottom: 18px; position: relative; }
+            .input-group label { display: block; font-size: 13px; color: var(--neon-gold); margin-bottom: 6px; font-weight: bold; }
+            .input-group input { width: 100%; background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.06); padding: 12px 40px 12px 12px; border-radius: 12px; color: white; box-sizing: border-box; font-size: 15px; }
+            .input-group i { position: absolute; right: 14px; top: 38px; color: var(--text-muted); }
+            .btn-auth { width: 100%; background: linear-gradient(135deg, var(--neon-gold), #ffaa00); color: #04060b; border: none; padding: 15px; border-radius: 35px; font-size: 17px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 20px rgba(255,215,0,0.25); }
+            .info-notice { font-size: 12px; color: var(--text-muted); line-height: 1.6; text-align: right; margin: 20px 0; background: rgba(255,215,0,0.02); padding: 12px; border-radius: 10px; border-right: 3px solid var(--neon-gold); }
+            .checking-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #04060b; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; font-family: monospace; }
+            .spinner { border: 3px solid rgba(255, 215, 0, 0.1); border-top: 3px solid var(--neon-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         </style>
     </head>
     <body>
@@ -70,7 +70,7 @@ async def login_page(msg: str = ""):
                 <div class="brand-logo">PocketSignal</div>
                 <div style="color:var(--text-muted); font-size:13px; margin-top:5px;">منظومة المعالجة السحابية الفورية للـ OTC وفوركس</div>
             </div>
-            {error_html}
+            REPLACE_ERROR_HTML
             <form action="/auth/register" method="post" onsubmit="showLoading(event, this)">
                 <div class="input-group">
                     <label>البريد الإلكتروني للربط بالمنصة</label>
@@ -89,26 +89,26 @@ async def login_page(msg: str = ""):
             </form>
         </div>
         <script>
-            function showLoading(event, formElement) {{
+            function showLoading(event, formElement) {
                 event.preventDefault();
                 const screen = document.getElementById('checkScreen');
                 const text = document.getElementById('checkText');
                 screen.style.display = 'flex';
-                setTimeout(() => {{ text.innerText = "جاري مطابقة البريد الإلكتروني مع بروتوكولات شريك التداول..."; }}, 1000);
-                setTimeout(() => {{ text.innerText = "تحليل جدار الحماية والأمان للوسيط Pocket Option..."; }}, 2200);
-                setTimeout(() => {{
+                setTimeout(() => { text.innerText = "جاري مطابقة البريد الإلكتروني مع بروتوكولات شريك التداول..."; }, 1000);
+                setTimeout(() => { text.innerText = "تحليل جدار الحماية والأمان للوسيط Pocket Option..."; }, 2200);
+                setTimeout(() => {
                     const urlParams = new URLSearchParams(window.location.search);
-                    if(urlParams.get('msg') === 'already_exists') {{
+                    if(urlParams.get('msg') === 'already_exists') {
                         formElement.submit();
-                    }} else {{
+                    } else {
                         window.location.href = "/login?msg=already_exists";
-                    }}
-                }}, 3500);
-            }}
+                    }
+                }, 3500);
+            }
         </script>
     </body>
     </html>
-    """
+    """.replace("REPLACE_ERROR_HTML", error_html)
     return html_content
 
 @app.post("/auth/register")
@@ -121,10 +121,9 @@ async def handle_register(email: str = Form(...), password: str = Form(...)):
 @app.get("/", response_class=HTMLResponse)
 async def get_premium_dashboard(welcome: bool = False):
     current_time = datetime.now().strftime("%H:%M:%S")
-    win_rate = random.randint(88, 95)
     auto_open_ref = f"window.open('{app_settings['referral_link']}', '_blank');" if welcome else ""
 
-    html_content = f"""
+    html_content = """
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
@@ -134,12 +133,12 @@ async def get_premium_dashboard(welcome: bool = False):
         <script src="https://jsdelivr.net"></script>
         <link rel="stylesheet" href="https://cloudflare.com">
         <style>
-            :root {{ --bg-cyber: #05070e; --panel-glass: rgba(15, 22, 36, 0.75); --border-neon: rgba(255, 215, 0, 0.25); --neon-yellow: #ffd700; --text-bright: #ffffff; --text-soft: #8da2c0; }}
-            body {{ font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-cyber); color: var(--text-bright); margin: 0; padding: 12px; direction: rtl; overflow-x: hidden; }}
-            .app-container {{ max-width: 440px; margin: auto; padding-bottom: 60px; }}
-            .holo-header {{ display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--panel-glass); border-radius: 20px; border: 1px solid var(--border-neon); }}
-            .brand-title {{ font-size: 21px; font-weight: 900; background: linear-gradient(90deg, var(--neon-yellow), #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-            .core-processor {{ background: var(--panel-glass); border-radius: 24px; padding: 22px; border: 1px solid rgba(255, 215, 0, 0.15); }}
-            .balance-display {{ font-size: 42px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); text-shadow: 0 0 15px rgba(255, 215, 0, 0.2); margin: 8px 0; }}
-            .screen-panel {{ background: #080c16; border-radius: 24px; padding: 18px; border: 1px solid var(--border-neon); margin-bottom: 12px; }}
-            .price-ticker {{ font-size: 26px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); }}
+            :root { --bg-cyber: #05070e; --panel-glass: rgba(15, 22, 36, 0.75); --border-neon: rgba(255, 215, 0, 0.25); --neon-yellow: #ffd700; --text-bright: #ffffff; --text-soft: #8da2c0; }
+            body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-cyber); color: var(--text-bright); margin: 0; padding: 12px; direction: rtl; overflow-x: hidden; }
+            .app-container { max-width: 440px; margin: auto; padding-bottom: 60px; }
+            .holo-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--panel-glass); border-radius: 20px; border: 1px solid var(--border-neon); }
+            .brand-title { font-size: 21px; font-weight: 900; background: linear-gradient(90deg, var(--neon-yellow), #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .core-processor { background: var(--panel-glass); border-radius: 24px; padding: 22px; border: 1px solid rgba(255, 215, 0, 0.15); }
+            .balance-display { font-size: 42px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); text-shadow: 0 0 15px rgba(255, 215, 0, 0.2); margin: 8px 0; }
+            .screen-panel { background: #080c16; border-radius: 24px; padding: 18px; border: 1px solid var(--border-neon); margin-bottom: 12px; }
+            .price-ticker { font-size: 26px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); }
