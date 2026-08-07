@@ -10,16 +10,13 @@ security = HTTPBasic()
 # ⚙️ إعدادات التحكم الافتراضية للتطبيق مع رابط إحالتك الرسمي
 app_settings = {
     "referral_link": "https://pocket-friends.co",
-    "win_rate_min": 88,
-    "win_rate_max": 96,
     "simulated_balance": "640.50",
     "system_status": "● معالج النواة الذكي لتوليد الإشارات نشط",
-    "status_color": "#ffd700",
     "ticker_text": "🔥 تنبيه أمني: يرجى ترقية وتفعيل الحساب الحقيقي فوراً عبر إيداع $10 كحد أدنى لمنع حظر الاتصال برمجياً عبر سيرفر المعالجة النيوني."
 }
 
 ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "YourSecretPassword2026"  # يمكنك تغيير كلمة السر لحماية لوحتك
+ADMIN_PASSWORD = "YourSecretPassword2026"
 
 def authenticate_admin(credentials: HTTPBasicCredentials = Depends(security)):
     if credentials.username != ADMIN_USERNAME or credentials.password != ADMIN_PASSWORD:
@@ -27,7 +24,7 @@ def authenticate_admin(credentials: HTTPBasicCredentials = Depends(security)):
     return credentials.username
 
 # ----------------------------------------------------
-# 1. واجهة الدخول مع محاكاة الفحص والتحذير الاستباقي (PocketSignal)
+# 1. واجهة الدخول مع محاكاة الفحص والتحذير الاستباقي
 # ----------------------------------------------------
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(msg: str = ""):
@@ -64,20 +61,16 @@ async def login_page(msg: str = ""):
         </style>
     </head>
     <body>
-        
         <div class="checking-screen" id="checkScreen">
             <div class="spinner"></div>
             <div style="color: var(--neon-gold); font-size: 14px;" id="checkText">جاري الاتصال بقاعدة بيانات السيرفر المركزي...</div>
         </div>
-
         <div class="auth-container">
             <div style="margin-bottom: 25px;">
                 <div class="brand-logo">PocketSignal</div>
                 <div style="color:var(--text-muted); font-size:13px; margin-top:5px;">منظومة المعالجة السحابية الفورية للـ OTC وفوركس</div>
             </div>
-            
             {error_html}
-
             <form action="/auth/register" method="post" onsubmit="showLoading(event, this)">
                 <div class="input-group">
                     <label>البريد الإلكتروني للربط بالمنصة</label>
@@ -89,25 +82,20 @@ async def login_page(msg: str = ""):
                     <input type="password" name="password" placeholder="••••••••" required>
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                
                 <div class="info-notice">
                     <i class="fa-solid fa-circle-exclamation"></i> <b>تنبيه أمني:</b> لتفادي رفض الاتصال، يجب استخدام بريد إلكتروني جديد كلياً لم يُسجل به سابقاً في المنصة المعتمدة. الحسابات القديمة مسدودة برمجياً.
                 </div>
-
                 <button type="submit" class="btn-auth">تفعيل وتوليد الإشارات الحية ◄</button>
             </form>
         </div>
-
         <script>
             function showLoading(event, formElement) {{
                 event.preventDefault();
                 const screen = document.getElementById('checkScreen');
                 const text = document.getElementById('checkText');
                 screen.style.display = 'flex';
-                
                 setTimeout(() => {{ text.innerText = "جاري مطابقة البريد الإلكتروني مع بروتوكولات شريك التداول..."; }}, 1000);
                 setTimeout(() => {{ text.innerText = "تحليل جدار الحماية والأمان للوسيط Pocket Option..."; }}, 2200);
-                
                 setTimeout(() => {{
                     const urlParams = new URLSearchParams(window.location.search);
                     if(urlParams.get('msg') === 'already_exists') {{
@@ -128,12 +116,12 @@ async def handle_register(email: str = Form(...), password: str = Form(...)):
     return RedirectResponse(url="/?welcome=true", status_code=status.HTTP_303_SEE_OTHER)
 
 # ----------------------------------------------------
-# 2. لوحة القيادة بنظام الشات المدمج والمبهج (PocketSignal)
+# 2. لوحة القيادة بنظام الشات المدمج والمبهج
 # ----------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
 async def get_premium_dashboard(welcome: bool = False):
     current_time = datetime.now().strftime("%H:%M:%S")
-    win_rate = random.randint(app_settings["win_rate_min"], app_settings["win_rate_max"])
+    win_rate = random.randint(88, 95)
     auto_open_ref = f"window.open('{app_settings['referral_link']}', '_blank');" if welcome else ""
 
     html_content = f"""
@@ -153,3 +141,5 @@ async def get_premium_dashboard(welcome: bool = False):
             .brand-title {{ font-size: 21px; font-weight: 900; background: linear-gradient(90deg, var(--neon-yellow), #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
             .core-processor {{ background: var(--panel-glass); border-radius: 24px; padding: 22px; border: 1px solid rgba(255, 215, 0, 0.15); }}
             .balance-display {{ font-size: 42px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); text-shadow: 0 0 15px rgba(255, 215, 0, 0.2); margin: 8px 0; }}
+            .screen-panel {{ background: #080c16; border-radius: 24px; padding: 18px; border: 1px solid var(--border-neon); margin-bottom: 12px; }}
+            .price-ticker {{ font-size: 26px; font-weight: 800; font-family: monospace; color: var(--neon-yellow); }}
